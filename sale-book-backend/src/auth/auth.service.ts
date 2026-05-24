@@ -3,12 +3,14 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async signIn(body: LoginDto) {
@@ -26,7 +28,7 @@ export class AuthService {
 
     const payload = {
       sub: user.id,
-      fullName: user.name,
+      name: user.name,
     };
 
     const accessToken = await this.jwtService.signAsync(payload);
@@ -36,7 +38,7 @@ export class AuthService {
       accessToken,
       user: {
         id: user.id,
-        fullName: user.name,
+        name: user.name,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       },

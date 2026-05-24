@@ -7,6 +7,7 @@ import { configuration, envValidationSchema } from './config/env.config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { StockBatchesModule } from './stock-batches/stock-batches.module';
+import { SalesModule } from './sales/sales.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { StockBatchesModule } from './stock-batches/stock-batches.module';
     UsersModule,
     AuthModule,
     StockBatchesModule,
+    SalesModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

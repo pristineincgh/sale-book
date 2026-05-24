@@ -5,6 +5,7 @@ export const envValidationSchema = Joi.object({
   PORT: Joi.number().default(8000),
   DATABASE_URL: Joi.string().required(),
   JWT_ACCESS_SECRET: Joi.string().min(64).required(),
+  ACCESS_TOKEN_TTL: Joi.string().default('7d'),
 });
 
 const envVars = process.env;
@@ -21,5 +22,6 @@ export const configuration = () => ({
   },
   jwt: {
     accessSecret: envVars.JWT_ACCESS_SECRET,
+    accessTokenTTL: process.env.ACCESS_TOKEN_TTL,
   },
 });
