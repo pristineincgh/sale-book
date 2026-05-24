@@ -27,12 +27,6 @@ export class UsersService {
     return bcrypt.compare(pin, hash);
   }
 
-  async findById(id: string) {
-    return this.prisma.user.findUnique({
-      where: { id },
-    });
-  }
-
   async create(payload: CreateUserDto) {
     const pinHash = await this.hashPassword(payload.pin);
 
@@ -75,6 +69,19 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async findByFullNameWithPin(name: string) {
+    return this.prisma.user.findFirst({
+      where: { name },
+      select: {
+        id: true,
+        name: true,
+        pinHash: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {

@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
 import { configuration, envValidationSchema } from './config/env.config';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { StockBatchesModule } from './stock-batches/stock-batches.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { UsersModule } from './users/users.module';
       validationSchema: envValidationSchema,
     }),
     UsersModule,
+    AuthModule,
+    StockBatchesModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
