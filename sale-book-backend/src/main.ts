@@ -13,6 +13,8 @@ async function bootstrap() {
     allowedHeaders: configService.get<string>('cors.allowedHeaders'),
   });
 
+  app.setGlobalPrefix('api/v1');
+
   const port = configService.get<number>('port') ?? 8000;
 
   await app.listen(port, () => {
