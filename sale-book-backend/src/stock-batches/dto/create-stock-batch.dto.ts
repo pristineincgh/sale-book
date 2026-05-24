@@ -5,21 +5,25 @@ import {
   IsOptional,
   Min,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateStockBatchDto {
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   quantityBought!: number;
 
+  @Type(() => Number)
   @IsNumber()
-  @Min(0)
+  @Min(0.01)
   costPerBag!: number;
 
+  @Type(() => Number)
   @IsNumber()
-  @Min(0)
+  @Min(0.01)
   sellingPricePerBag!: number;
 
-  @IsDateString()
   @IsOptional()
+  @IsDateString()
   suppliedAt?: string;
 }

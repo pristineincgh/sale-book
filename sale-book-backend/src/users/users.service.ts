@@ -38,6 +38,12 @@ export class UsersService {
       throw new ConflictException('User already exists');
     }
 
+    const name = payload.name.trim();
+
+    if (!name) {
+      throw new ConflictException('Name is required');
+    }
+
     const user = await this.prisma.user.create({
       data: {
         name: payload.name,
