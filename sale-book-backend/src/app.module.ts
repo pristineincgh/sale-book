@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { StockBatchesModule } from './stock-batches/stock-batches.module';
 import { SalesModule } from './sales/sales.module';
 import { DebtPaymentsModule } from './debt-payments/debt-payments.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { DebtPaymentsModule } from './debt-payments/debt-payments.module';
     StockBatchesModule,
     SalesModule,
     DebtPaymentsModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
