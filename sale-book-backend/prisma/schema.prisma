@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum StockBatchStatus {
+  ACTIVE
+  COMPLETED
+  MONEY_MISSING
+}
+
+enum PaymentStatus {
+  PAID
+  PARTIAL
+  OWING
+}
+
+model User {
+  id           String       @id @default(uuid())
+  name         String       @unique
+  pinHash      String
+  stockBatches StockBatch[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([name])
+  @@map("users")
+}
+
+model StockBatch {
+  id                 String           @id @default(uuid())
+  batchNumber        Int
+  quantityBought     Int
+  quantitySold       Int              @default(0)
+  quantityRemaining  Int
+  costPerBag         Decimal          @db.Decimal(10, 2)
+  sellingPricePerBag Decimal          @db.Decimal(10, 2)
+  totalCost          Decimal          @db.Decimal(10, 2)
+  expectedRevenue    Decimal          @db.Decimal(10, 2)
+  expectedProfit     Decimal          @db.Decimal(10, 2)
+  actualRevenue      Decimal          @default(0) @db.Decimal(10, 2)
+  moneyMissing       Decimal          @default(0) @db.Decimal(10, 2)
+  moneyOwed          Decimal          @default(0) @db.Decimal(10, 2)
+  suppliedAt         DateTime
+  completedAt        DateTime?
+  status             StockBatchStatus @default(ACTIVE)
+  userId             String
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sales              Sale[]
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@unique([userId, batchNumber])
+  @@index([userId])
+  @@index([status])
+  @@map("stock_batches")
+}
+
+model Sale {
+  id             String        @id @default(uuid())
+  quantity       Int
+  amountExpected Decimal       @db.Decimal(10, 2)
+  amountPaid     Decimal       @default(0) @db.Decimal(10, 2)
+  paymentStatus  PaymentStatus
+  customerName   String
+  soldAt         DateTime      @default(now())
+  stockBatchId   String
+  stockBatch     StockBatch    @relation(fields: [stockBatchId], references: [id], onDelete: Cascade)
+  debtPayments   DebtPayment[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([stockBatchId])
+  @@index([soldAt])
+  @@map("sales")
+}
+
+model DebtPayment {
+  id        String   @id @default(uuid())
+  amount    Decimal  @db.Decimal(10, 2)
+  paidAt    DateTime @default(now())
+  saleId    String
+  sale      Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([saleId])
+  @@index([paidAt])
+  @@map("debt_payments")
+}
